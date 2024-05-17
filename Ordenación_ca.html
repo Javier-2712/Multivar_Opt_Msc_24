@@ -1,0 +1,1452 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="es-ES" xml:lang="es-ES"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.2.335">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Talleres de Análisis Multivariados en R - 12&nbsp; Taller 6.1 CA peces</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./Ordenación_mca.html" rel="next">
+<link href="./Ordenación_nmds2.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "Sin resultados",
+    "search-matching-documents-text": "documentos encontrados",
+    "search-copy-link-title": "Copiar el enlace en la búsqueda",
+    "search-hide-matches-text": "Ocultar resultados adicionales",
+    "search-more-match-text": "resultado adicional en este documento",
+    "search-more-matches-text": "resultados adicionales en este documento",
+    "search-clear-button-title": "Borrar",
+    "search-detached-cancel-button-title": "Cancelar",
+    "search-submit-button-title": "Enviar"
+  }
+}</script>
+<script async="" src="https://hypothes.is/embed.js"></script>
+<style>
+    .quarto-title-block .quarto-title-banner {
+      background: #71ACEC;
+    }
+    </style>
+
+<script src="site_libs/kePrint-0.0.1/kePrint.js"></script>
+<link href="site_libs/lightable-0.0.1/lightable.css" rel="stylesheet">
+
+
+<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="stile-justify.css">
+</head>
+
+<body class="nav-sidebar docked">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+    <div class="container-fluid d-flex justify-content-between">
+      <h1 class="quarto-secondary-nav-title"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Taller 6.1 CA peces</span></h1>
+      <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
+        <i class="bi bi-chevron-right"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<header id="title-block-header" class="quarto-title-block default page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title d-none d-lg-block"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Taller 6.1 CA peces</span></h1>
+                      </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta">
+
+      
+    
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation docked overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Talleres de Análisis Multivariados en R</a> 
+        <div class="sidebar-tools-main">
+    <a href="https://github.com/Javier-2712/Manuales/tree/main/3.Manual_msc1" title="Source Code" class="sidebar-tool px-1"><i class="bi bi-github"></i></a>
+</div>
+    </div>
+      </div>
+      <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+      </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">index.html</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./Resumen.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Resumen</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./Videos_clases.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Videos_clases</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./Pautas_iniciales.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Pautas Iniciales</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./Introducción_R.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Taller 1. Intro a R</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./Pautas_Estudio_Caso.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Pautas Estudios de Caso</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./Exploratorios.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Taller 3. Exploratorios</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./Ordenación_pca1.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Taller 4.1 PCA Bahías</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./Ordenación_pca2.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Taller 4.2 PCA Tayrona</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./Ordenación_nmds.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Taller 5.1 NMDS Malezas</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./Ordenación_nmds2.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Taller 5.2 NMDS Peces</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./Ordenación_ca.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Taller 6.1 CA peces</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./Ordenación_mca.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Taller 6.2 MCA Peces</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./Ordenación_rda.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Taller 7. RDA Microalgas</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./Clasificación_cla.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Taller 8. CLA Bahías</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./Clasificación_lda.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Taller 9. LDA peces</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./Manova.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Taller 10. Manovas peces</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./Permanova.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Taller 11. Permanovas peces</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">Referencias</a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Menú flotante</h2>
+   
+  <ul>
+  <li><a href="#section" id="toc-section" class="nav-link active" data-scroll-target="#section"></a></li>
+  <li><a href="#objetivo-de-la-actividad" id="toc-objetivo-de-la-actividad" class="nav-link" data-scroll-target="#objetivo-de-la-actividad">Objetivo de la actividad</a></li>
+  <li><a href="#cargar-librerías" id="toc-cargar-librerías" class="nav-link" data-scroll-target="#cargar-librerías">Cargar librerías</a></li>
+  <li><a href="#cargar-las-bases-de-datos" id="toc-cargar-las-bases-de-datos" class="nav-link" data-scroll-target="#cargar-las-bases-de-datos">Cargar las bases de datos</a></li>
+  <li><a href="#generar-la-variable-agrupadora-factor" id="toc-generar-la-variable-agrupadora-factor" class="nav-link" data-scroll-target="#generar-la-variable-agrupadora-factor">Generar la variable agrupadora (factor)</a></li>
+  <li><a href="#resumen-de-las-15-especies-de-peces-más-abundantes" id="toc-resumen-de-las-15-especies-de-peces-más-abundantes" class="nav-link" data-scroll-target="#resumen-de-las-15-especies-de-peces-más-abundantes">Resumen de las 15 especies de peces más abundantes</a></li>
+  <li><a href="#section-1" id="toc-section-1" class="nav-link" data-scroll-target="#section-1"></a></li>
+  <li><a href="#ca-con-el-paquete-vegan" id="toc-ca-con-el-paquete-vegan" class="nav-link" data-scroll-target="#ca-con-el-paquete-vegan">1. CA con el paquete vegan</a>
+  <ul class="collapse">
+  <li><a href="#paso-1.-realización-del-ca" id="toc-paso-1.-realización-del-ca" class="nav-link" data-scroll-target="#paso-1.-realización-del-ca">Paso 1. Realización del CA</a></li>
+  <li><a href="#paso-2.-componente-gráfico-del-ca" id="toc-paso-2.-componente-gráfico-del-ca" class="nav-link" data-scroll-target="#paso-2.-componente-gráfico-del-ca">Paso 2. Componente gráfico del CA</a></li>
+  </ul></li>
+  <li><a href="#section-2" id="toc-section-2" class="nav-link" data-scroll-target="#section-2"></a></li>
+  <li><a href="#ca-con-el-paquete-ca" id="toc-ca-con-el-paquete-ca" class="nav-link" data-scroll-target="#ca-con-el-paquete-ca">2. CA con el paquete ca</a>
+  <ul class="collapse">
+  <li><a href="#paso-1.-realización-del-ca-1" id="toc-paso-1.-realización-del-ca-1" class="nav-link" data-scroll-target="#paso-1.-realización-del-ca-1">Paso 1. Realización del CA</a></li>
+  <li><a href="#paso-2.-componente-gráfico-del-ca-1" id="toc-paso-2.-componente-gráfico-del-ca-1" class="nav-link" data-scroll-target="#paso-2.-componente-gráfico-del-ca-1">Paso 2. Componente gráfico del CA</a></li>
+  </ul></li>
+  <li><a href="#section-3" id="toc-section-3" class="nav-link" data-scroll-target="#section-3"></a></li>
+  <li><a href="#ca-con-el-paquete-factominer" id="toc-ca-con-el-paquete-factominer" class="nav-link" data-scroll-target="#ca-con-el-paquete-factominer">3. CA con el paquete factominer</a>
+  <ul class="collapse">
+  <li><a href="#paso-1.-realización-del-ca-2" id="toc-paso-1.-realización-del-ca-2" class="nav-link" data-scroll-target="#paso-1.-realización-del-ca-2">Paso 1. Realización del CA</a></li>
+  <li><a href="#paso-2.-componente-gráfico-del-ca-2" id="toc-paso-2.-componente-gráfico-del-ca-2" class="nav-link" data-scroll-target="#paso-2.-componente-gráfico-del-ca-2">Paso 2. Componente gráfico del CA</a></li>
+  </ul></li>
+  <li><a href="#section-4" id="toc-section-4" class="nav-link" data-scroll-target="#section-4"></a></li>
+  <li><a href="#ca-con-el-paquete-factominer-1" id="toc-ca-con-el-paquete-factominer-1" class="nav-link" data-scroll-target="#ca-con-el-paquete-factominer-1">4. CA con el paquete factominer</a>
+  <ul class="collapse">
+  <li><a href="#paso-2.-componente-gráfico-del-ca-3" id="toc-paso-2.-componente-gráfico-del-ca-3" class="nav-link" data-scroll-target="#paso-2.-componente-gráfico-del-ca-3">Paso 2. Componente gráfico del CA</a></li>
+  </ul></li>
+  <li><a href="#section-5" id="toc-section-5" class="nav-link" data-scroll-target="#section-5"></a></li>
+  <li><a href="#ca-con-el-paquete-ggplot2" id="toc-ca-con-el-paquete-ggplot2" class="nav-link" data-scroll-target="#ca-con-el-paquete-ggplot2">5. CA con el paquete ggplot2</a>
+  <ul class="collapse">
+  <li><a href="#paso-1.-realización-del-ca-3" id="toc-paso-1.-realización-del-ca-3" class="nav-link" data-scroll-target="#paso-1.-realización-del-ca-3">Paso 1. Realización del CA</a></li>
+  <li><a href="#paso-2.-componente-gráfico-del-ca-4" id="toc-paso-2.-componente-gráfico-del-ca-4" class="nav-link" data-scroll-target="#paso-2.-componente-gráfico-del-ca-4">Paso 2. Componente gráfico del CA</a></li>
+  </ul></li>
+  <li><a href="#taller-de-entrenamiento" id="toc-taller-de-entrenamiento" class="nav-link" data-scroll-target="#taller-de-entrenamiento">Taller de entrenamiento</a></li>
+  </ul>
+<div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/Javier-2712/Manuales/tree/main/3.Manual_msc1/edit/main/Ordenación_ca.qmd" class="toc-action">Editar esta página</a></p></div></div></nav>
+    </div>
+<!-- main -->
+<main class="content quarto-banner-title-block" id="quarto-document-content">
+
+
+
+
+<section id="section" class="level2">
+<h2 class="anchored" data-anchor-id="section"></h2>
+<p><b style="color:#1f78b4;"></b></p><b style="color:#1f78b4;">
+</b></section><b style="color:#1f78b4;">
+</b><section id="objetivo-de-la-actividad" class="level2"><b style="color:#1f78b4;">
+<h2 class="anchored" data-anchor-id="objetivo-de-la-actividad">Objetivo de la actividad</h2>
+</b><p><b style="color:#1f78b4;"></b></p>
+<p>La presente base de datos es tomada del libro Numerical Ecology With R <a href="https://link-springer-com.biblioteca.unimagdalena.edu.co/chapter/10.1007/978-3-319-71404-2_5#Sec20">Borcard eta al.&nbsp;2018</a>, para profundizar sobre la aplicación de dos técnicas de ordenación canónica multivariada de uso común en estudios ecológicos, que corresponden al análisis de correspondencia simple o clásico (CA). Para mejorar la comprensión de este documento se recomienda que sea complementado con el capítulo 6 del libro citado y correr su script (capitulo y script serán entregados por el docente). El objetivo de este ejercicio consiste en caracterizar a los tributarios de acuerdo a la abundancia de los speones de peces e incorporar a las variables ambientales mediante el comando enfit del paquete vegan, para valorar la relación de estos parámetros con el patrón de distribución y de abundancia de los peces.</p>
+<p>Como soporte bibliográfico, se puede revisar el texto guía de <a href="https://www-ebooks7-24-com.biblioteca.unimagdalena.edu.co/?il=26489&amp;pg=167">Rodríguez-Barrios (2023)</a>, en el capítulo 6, sección 6.1, orientado al análisis de correspondencia simple.</p>
+<p>En la página de <a href="http://www.sthda.com/english/wiki/fviz-ca-quick-correspondence-analysis-data-visualization-using-factoextra-r-software-and-data-mining">STHDA</a> también se pueden encontrar opciones gráficas al análisis de correspondencia simple.</p>
+<p><b style="color:#1f78b4;"></b></p><b style="color:#1f78b4;">
+</b></section><b style="color:#1f78b4;">
+</b><section id="cargar-librerías" class="level2"><b style="color:#1f78b4;">
+<h2 class="anchored" data-anchor-id="cargar-librerías">Cargar librerías</h2>
+</b><p><b style="color:#1f78b4;"></b></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Librerías requeridas</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ade4)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(vegan)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ca)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(anacor)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(FactoMineR)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(factoextra)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(reshape2)</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggrepel)</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(kableExtra)</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggforce)</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(corrplot)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><b style="color:#1f78b4;"></b></p><b style="color:#1f78b4;">
+</b></section><b style="color:#1f78b4;">
+</b><section id="cargar-las-bases-de-datos" class="level2"><b style="color:#1f78b4;">
+<h2 class="anchored" data-anchor-id="cargar-las-bases-de-datos">Cargar las bases de datos</h2>
+</b><p><b style="color:#1f78b4;"></b></p>
+<p>La fila 8 no tiene datos, por ello se eliminará ([-8,]).</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Cargar las bases de datos</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>spe <span class="ot">=</span> <span class="fu">read.csv2</span>(<span class="st">"DoubsSpe.csv"</span>,<span class="at">row.names=</span><span class="dv">1</span>)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>env <span class="ot">=</span> <span class="fu">read.csv2</span>(<span class="st">"DoubsEnv.csv"</span>,<span class="at">row.names=</span><span class="dv">1</span>)</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Suprimir el sitio 8</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>spe<span class="ot">=</span>spe[<span class="sc">-</span><span class="dv">8</span>,]</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>env<span class="ot">=</span>env[<span class="sc">-</span><span class="dv">8</span>,]</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><b style="color:#1f78b4;"></b></p><b style="color:#1f78b4;">
+</b></section><b style="color:#1f78b4;">
+</b><section id="generar-la-variable-agrupadora-factor" class="level2"><b style="color:#1f78b4;">
+<h2 class="anchored" data-anchor-id="generar-la-variable-agrupadora-factor">Generar la variable agrupadora (factor)</h2>
+</b><p><b style="color:#1f78b4;"></b></p>
+<p>Esto se requiere para cuando no se cuenta con un factor o variable agrupadora. Para este caso se tendrá en cuenta la propuesta de <strong>Borcard et al.&nbsp;(2018)</strong>, en la que definen cuatro grupos (grupos A al D).</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Generación del factor</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>datos.w <span class="ot">&lt;-</span> <span class="fu">hclust</span>(<span class="fu">vegdist</span>(spe), <span class="st">"ward.D"</span>)  <span class="co"># Grupos con Cluster con ward</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>grupo <span class="ot">&lt;-</span> <span class="fu">cutree</span>(datos.w, <span class="at">k =</span> <span class="dv">4</span>)            <span class="co"># Generar 3 grupos (factor grupo)</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>datos.gr<span class="ot">=</span><span class="fu">data.frame</span>(grupo,spe)             <span class="co"># Base de datos con el factor agrupador</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>datos.gr<span class="sc">$</span>grupo<span class="ot">=</span><span class="fu">as.factor</span>(datos.gr<span class="sc">$</span>grupo)   <span class="co"># Crear la columna gr como factor</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>rotulos <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"A"</span>, <span class="st">"B"</span>, <span class="st">"C"</span>, <span class="st">"D"</span>)           <span class="co"># Nuevos rótulos a los tres grupos creados</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>datos.gr<span class="sc">$</span>grupo <span class="ot">&lt;-</span> <span class="fu">factor</span>(datos.gr<span class="sc">$</span>grupo, </span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>                         <span class="at">labels =</span> rotulos)</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="co">#str(datos.gr)</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Presentación de la tabla con las 10 primeras filas</span></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>datos.gr[<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>,] <span class="sc">%&gt;%</span> </span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kbl</span>(<span class="at">booktabs =</span> F) <span class="sc">%&gt;%</span> </span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable_classic</span>(<span class="at">full_width=</span>F, <span class="at">html_font =</span> <span class="st">"Cambria"</span>)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+
+<table class=" lightable-classic" style="font-family: Cambria; width: auto !important; margin-left: auto; margin-right: auto;">
+ <thead>
+  <tr>
+   <th style="text-align:left;">   </th>
+   <th style="text-align:left;"> grupo </th>
+   <th style="text-align:right;"> Cogo </th>
+   <th style="text-align:right;"> Satr </th>
+   <th style="text-align:right;"> Phph </th>
+   <th style="text-align:right;"> Babl </th>
+   <th style="text-align:right;"> Thth </th>
+   <th style="text-align:right;"> Teso </th>
+   <th style="text-align:right;"> Chna </th>
+   <th style="text-align:right;"> Pato </th>
+   <th style="text-align:right;"> Lele </th>
+   <th style="text-align:right;"> Sqce </th>
+   <th style="text-align:right;"> Baba </th>
+   <th style="text-align:right;"> Albi </th>
+   <th style="text-align:right;"> Gogo </th>
+   <th style="text-align:right;"> Eslu </th>
+   <th style="text-align:right;"> Pefl </th>
+   <th style="text-align:right;"> Rham </th>
+   <th style="text-align:right;"> Legi </th>
+   <th style="text-align:right;"> Scer </th>
+   <th style="text-align:right;"> Cyca </th>
+   <th style="text-align:right;"> Titi </th>
+   <th style="text-align:right;"> Abbr </th>
+   <th style="text-align:right;"> Icme </th>
+   <th style="text-align:right;"> Gyce </th>
+   <th style="text-align:right;"> Ruru </th>
+   <th style="text-align:right;"> Blbj </th>
+   <th style="text-align:right;"> Alal </th>
+   <th style="text-align:right;"> Anan </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> 1 </td>
+   <td style="text-align:left;"> A </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 3 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 2 </td>
+   <td style="text-align:left;"> A </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 5 </td>
+   <td style="text-align:right;"> 4 </td>
+   <td style="text-align:right;"> 3 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 3 </td>
+   <td style="text-align:left;"> A </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 5 </td>
+   <td style="text-align:right;"> 5 </td>
+   <td style="text-align:right;"> 5 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 4 </td>
+   <td style="text-align:left;"> A </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 4 </td>
+   <td style="text-align:right;"> 5 </td>
+   <td style="text-align:right;"> 5 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 2 </td>
+   <td style="text-align:right;"> 2 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 5 </td>
+   <td style="text-align:left;"> B </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 2 </td>
+   <td style="text-align:right;"> 3 </td>
+   <td style="text-align:right;"> 2 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 5 </td>
+   <td style="text-align:right;"> 2 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 2 </td>
+   <td style="text-align:right;"> 4 </td>
+   <td style="text-align:right;"> 4 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 2 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 3 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 5 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 6 </td>
+   <td style="text-align:left;"> A </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 3 </td>
+   <td style="text-align:right;"> 4 </td>
+   <td style="text-align:right;"> 5 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 2 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 2 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 7 </td>
+   <td style="text-align:left;"> A </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 5 </td>
+   <td style="text-align:right;"> 4 </td>
+   <td style="text-align:right;"> 5 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 9 </td>
+   <td style="text-align:left;"> B </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 3 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 5 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 4 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 10 </td>
+   <td style="text-align:left;"> A </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 4 </td>
+   <td style="text-align:right;"> 4 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 2 </td>
+   <td style="text-align:right;"> 2 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 11 </td>
+   <td style="text-align:left;"> A </td>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 3 </td>
+   <td style="text-align:right;"> 4 </td>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+  </tr>
+</tbody>
+</table>
+
+</div>
+</div>
+<p><b style="color:#1f78b4;"></b></p><b style="color:#1f78b4;">
+</b></section><b style="color:#1f78b4;">
+</b><section id="resumen-de-las-15-especies-de-peces-más-abundantes" class="level2"><b style="color:#1f78b4;">
+<h2 class="anchored" data-anchor-id="resumen-de-las-15-especies-de-peces-más-abundantes">Resumen de las 15 especies de peces más abundantes</h2>
+</b><p><b style="color:#1f78b4;"></b></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Extraer los promedios de las abundancias</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>prom <span class="ot">=</span> <span class="fu">colMeans</span>(spe)</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Extraer las 15 especies más abundantes </span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="co"># FALSE muestra las 15 menos abundantes</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>ab <span class="ot">&lt;-</span> <span class="fu">names</span>(<span class="fu">sort</span>(prom, <span class="at">decreasing =</span> <span class="cn">TRUE</span>)[<span class="dv">1</span><span class="sc">:</span><span class="dv">15</span>])</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Crear un nuevo dataframe con las dos columnas seleccionadas</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>spe.ab <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(spe[, ab])</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Otra opción de dataframe: spe.ab &lt;- datos1[, ab]</span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(spe.ab)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  Babl Phph Ruru Satr Alal Sqce Gogo Titi Lele Baba Eslu Gyce Pefl Rham Blbj
+1    0    0    0    3    0    0    0    0    0    0    0    0    0    0    0
+2    3    4    0    5    0    0    0    0    0    0    0    0    0    0    0
+3    5    5    0    5    0    0    0    0    0    0    1    0    0    0    0
+4    5    5    0    4    0    1    1    1    0    0    2    0    2    0    0
+5    2    3    5    2    0    2    2    3    5    0    4    0    4    0    0
+6    5    4    1    3    0    2    1    2    1    0    1    0    1    0    0</code></pre>
+</div>
+</div>
+<p><strong>Nota</strong>: Esto solo se hace para la exploración. Para las técnicas multivariadas se utilizan todas las especies.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Elipses con colores</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>M1 <span class="ot">&lt;-</span> <span class="fu">cor</span>(spe.ab)            <span class="co"># Matriz de Correlación (M)</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Elipses con colores y coeficientes de correlación</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="fu">corrplot</span>(M1, <span class="at">method =</span> <span class="st">"ellipse"</span>, <span class="at">addCoef.col =</span> <span class="st">"black"</span>, <span class="at">number.cex =</span> <span class="fl">0.5</span>, <span class="at">order =</span> <span class="st">"AOE"</span>)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div id="fig-fig1" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="Ordenación_ca_files/figure-html/fig-fig1-1.png" class="img-fluid figure-img" width="672"></p>
+<p></p><figcaption class="figure-caption">Figura&nbsp;12.1: Relación de las especies más abundantes.</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="section-1" class="level2">
+<h2 class="anchored" data-anchor-id="section-1"></h2>
+<p><b style="color:#1f78b4;"></b></p><b style="color:#1f78b4;">
+</b></section><b style="color:#1f78b4;">
+</b><section id="ca-con-el-paquete-vegan" class="level2"><b style="color:#1f78b4;">
+<h2 class="anchored" data-anchor-id="ca-con-el-paquete-vegan">1. CA con el paquete vegan</h2>
+</b><p><b style="color:#1f78b4;"></b></p>
+<p><b style="color:#2ca25f;"></b></p><b style="color:#2ca25f;">
+</b><section id="paso-1.-realización-del-ca" class="level3"><b style="color:#2ca25f;">
+<h3 class="anchored" data-anchor-id="paso-1.-realización-del-ca">Paso 1. Realización del CA</h3>
+</b><p><b style="color:#2ca25f;"></b></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Cálculo del CA para los peces, con el paquete vegan</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>ca1 <span class="ot">&lt;-</span> <span class="fu">cca</span>(spe[,<span class="dv">1</span><span class="sc">:</span><span class="dv">27</span>])</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>ca1</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Call: cca(X = spe[, 1:27])
+
+              Inertia Rank
+Total           1.167     
+Unconstrained   1.167   26
+Inertia is scaled Chi-square 
+
+Eigenvalues for unconstrained axes:
+   CA1    CA2    CA3    CA4    CA5    CA6    CA7    CA8 
+0.6010 0.1444 0.1073 0.0834 0.0516 0.0418 0.0339 0.0288 
+(Showing 8 of 26 unconstrained eigenvalues)</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># summary(ca1)                    # por default lo hace con scaling 2</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><b style="color:#2ca25f;"></b></p><b style="color:#2ca25f;">
+</b></section><b style="color:#2ca25f;">
+</b><section id="paso-2.-componente-gráfico-del-ca" class="level3"><b style="color:#2ca25f;">
+<h3 class="anchored" data-anchor-id="paso-2.-componente-gráfico-del-ca">Paso 2. Componente gráfico del CA</h3>
+</b><p><b style="color:#2ca25f;"></b></p>
+<p>En la <a href="#fig-fig2">Figura&nbsp;<span>12.2</span></a> se definen tres ejes significativos para la ordenación (CA 1 a CA3). Esto se define por el criterio de vara quebrada.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Criterio de Vara quebrada unsando el comando screeplot.cca()</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="fu">screeplot</span>(ca1, <span class="at">bstick =</span> <span class="cn">TRUE</span>, <span class="at">npcs =</span> <span class="fu">length</span>(ca1<span class="sc">$</span>CA<span class="sc">$</span>eig),</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>          <span class="at">main =</span> <span class="fu">deparse</span>(<span class="fu">substitute</span>(Ejes.CA)), <span class="at">ylab =</span> <span class="st">"Inercia"</span>)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div id="fig-fig2" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="Ordenación_ca_files/figure-html/fig-fig2-1.png" class="img-fluid figure-img" width="672"></p>
+<p></p><figcaption class="figure-caption">Figura&nbsp;12.2: Criterio de vara quebrada para definir los ejes canónicos significativos para el análisis.</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<p>La <a href="#fig-fig3">Figura&nbsp;<span>12.3</span></a> muestra los dos tipos de ordenación escalando las coordenadas de las localidades (scaling1) y de los taxones (scaling2).</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Biplot del CA</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>))</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Scaling 1: Los sitios son centroides de las especies</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(ca1, <span class="at">scaling =</span> <span class="dv">1</span>, </span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>     <span class="at">main =</span> <span class="st">"Biplot en Saling 1"</span>)</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Scaling 2 (default): Las especies son centroides de los sitios</span></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(ca1, <span class="at">main =</span> <span class="st">"Biplot en Saling 2"</span>)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div id="fig-fig3" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="Ordenación_ca_files/figure-html/fig-fig3-1.png" class="img-fluid figure-img" width="672"></p>
+<p></p><figcaption class="figure-caption">Figura&nbsp;12.3: Dos opciones gráficas para el biplot del ca, con el paquete vegan.</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<p>En la <a href="#fig-fig4">Figura&nbsp;<span>12.4</span></a> se incorpora a las variables ambientales, mediante el comando enfit.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Incluir las variables ambientales en el CA</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(ca1, <span class="at">main =</span> <span class="st">"Biplot - scaling 2"</span>, </span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>     <span class="at">sub =</span> <span class="st">"Curvas ajustadas: descarga (rojo), ammonio (verde)"</span>)</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Inserción de elementos a la figura</span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>ca1.env <span class="ot">&lt;-</span> <span class="fu">envfit</span>(ca1 <span class="sc">~</span> dis <span class="sc">+</span> amm, env)</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(ca1.env)                               <span class="co"># Variables ambientales</span></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a><span class="fu">ordisurf</span>(ca1, env<span class="sc">$</span>dis, <span class="at">add =</span> <span class="cn">TRUE</span>)          <span class="co"># Líneas rojas - descarga</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Family: gaussian 
+Link function: identity 
+
+Formula:
+y ~ s(x1, x2, k = 10, bs = "tp", fx = FALSE)
+
+Estimated degrees of freedom:
+4.29  total = 5.29 
+
+REML score: 123.1156     </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ordisurf</span>(ca1, env<span class="sc">$</span>amm, <span class="at">add =</span> <span class="cn">TRUE</span>, <span class="at">col =</span> <span class="st">"green"</span>)   <span class="co"># Líneas verdes - amonio</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Family: gaussian 
+Link function: identity 
+
+Formula:
+y ~ s(x1, x2, k = 10, bs = "tp", fx = FALSE)
+
+Estimated degrees of freedom:
+1.16  total = 2.16 
+
+REML score: 2.949274     </code></pre>
+</div>
+<div class="cell-output-display">
+<div id="fig-fig4" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="Ordenación_ca_files/figure-html/fig-fig4-1.png" class="img-fluid figure-img" width="672"></p>
+<p></p><figcaption class="figure-caption">Figura&nbsp;12.4: Ordenación de las localidades, los taxones y las variables ambientales.</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="section-2" class="level2">
+<h2 class="anchored" data-anchor-id="section-2"></h2>
+<p><b style="color:#1f78b4;"></b></p><b style="color:#1f78b4;">
+</b></section><b style="color:#1f78b4;">
+</b><section id="ca-con-el-paquete-ca" class="level2"><b style="color:#1f78b4;">
+<h2 class="anchored" data-anchor-id="ca-con-el-paquete-ca">2. CA con el paquete ca</h2>
+</b><p><b style="color:#1f78b4;"></b></p>
+<p><b style="color:#2ca25f;"></b></p><b style="color:#2ca25f;">
+</b><section id="paso-1.-realización-del-ca-1" class="level3"><b style="color:#2ca25f;">
+<h3 class="anchored" data-anchor-id="paso-1.-realización-del-ca-1">Paso 1. Realización del CA</h3>
+</b><p><b style="color:#2ca25f;"></b></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Comando CA, del paquete CA </span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>ca2 <span class="ot">&lt;-</span> <span class="fu">ca</span>(spe)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><b style="color:#2ca25f;"></b></p><b style="color:#2ca25f;">
+</b></section><b style="color:#2ca25f;">
+</b><section id="paso-2.-componente-gráfico-del-ca-1" class="level3"><b style="color:#2ca25f;">
+<h3 class="anchored" data-anchor-id="paso-2.-componente-gráfico-del-ca-1">Paso 2. Componente gráfico del CA</h3>
+</b><p><b style="color:#2ca25f;"></b></p>
+<p>La <a href="#fig-fig5">Figura&nbsp;<span>12.5</span></a> a diferencia de las anteriores, incorpora a la varianza que captura cada eje canónico en la ordenación.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># summary(ca2(spe))</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(ca2)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div id="fig-fig5" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="Ordenación_ca_files/figure-html/fig-fig5-1.png" class="img-fluid figure-img" width="672"></p>
+<p></p><figcaption class="figure-caption">Figura&nbsp;12.5: Ordenación de las localidades y los taxones.</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="section-3" class="level2">
+<h2 class="anchored" data-anchor-id="section-3"></h2>
+<p><b style="color:#1f78b4;"></b></p><b style="color:#1f78b4;">
+</b></section><b style="color:#1f78b4;">
+</b><section id="ca-con-el-paquete-factominer" class="level2"><b style="color:#1f78b4;">
+<h2 class="anchored" data-anchor-id="ca-con-el-paquete-factominer">3. CA con el paquete factominer</h2>
+</b><p><b style="color:#1f78b4;"></b></p>
+<p><b style="color:#2ca25f;"></b></p><b style="color:#2ca25f;">
+</b><section id="paso-1.-realización-del-ca-2" class="level3"><b style="color:#2ca25f;">
+<h3 class="anchored" data-anchor-id="paso-1.-realización-del-ca-2">Paso 1. Realización del CA</h3>
+</b><p><b style="color:#2ca25f;"></b></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># CA de los paquetes "factominer y factoextra"</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>ca3 <span class="ot">&lt;-</span> <span class="fu">CA</span> (spe, <span class="at">graph =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a><span class="co"># summary(ca3)</span></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a><span class="co"># print(ca3)</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><b style="color:#2ca25f;"></b></p><b style="color:#2ca25f;">
+</b></section><b style="color:#2ca25f;">
+</b><section id="paso-2.-componente-gráfico-del-ca-2" class="level3"><b style="color:#2ca25f;">
+<h3 class="anchored" data-anchor-id="paso-2.-componente-gráfico-del-ca-2">Paso 2. Componente gráfico del CA</h3>
+</b><p><b style="color:#2ca25f;"></b></p>
+<p>La <a href="#fig-fig6">Figura&nbsp;<span>12.6</span></a> Es complementaria al anterior ca (ca2), incluyendo elipses al rededor de algunas especies de peces.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Elipses sobre algunas especies de peces</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ellipseCA</span>(ca3,<span class="at">ellipse=</span><span class="st">"col"</span>,</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>          <span class="at">col.col.ell=</span><span class="fu">c</span>(<span class="fu">rep</span>(<span class="st">"blue"</span>,<span class="dv">2</span>),</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>                        <span class="fu">rep</span>(<span class="st">"transparent"</span>,<span class="dv">3</span>)),</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>     <span class="at">invisible=</span><span class="fu">c</span>(<span class="st">"row.sup"</span>,<span class="st">"col.sup"</span>))</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div id="fig-fig6" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="Ordenación_ca_files/figure-html/fig-fig6-1.png" class="img-fluid figure-img" width="672"></p>
+<p></p><figcaption class="figure-caption">Figura&nbsp;12.6: Criterio de vara quebrada para definir a los ejes canónicos significativos para la ordenación.</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="section-4" class="level2">
+<h2 class="anchored" data-anchor-id="section-4"></h2>
+<p><b style="color:#1f78b4;"></b></p><b style="color:#1f78b4;">
+</b></section><b style="color:#1f78b4;">
+</b><section id="ca-con-el-paquete-factominer-1" class="level2"><b style="color:#1f78b4;">
+<h2 class="anchored" data-anchor-id="ca-con-el-paquete-factominer-1">4. CA con el paquete factominer</h2>
+</b><p><b style="color:#1f78b4;"></b></p>
+<p>Se utilizará el paso 1 del anterior ca.</p>
+<p><b style="color:#2ca25f;"></b></p><b style="color:#2ca25f;">
+</b><section id="paso-2.-componente-gráfico-del-ca-3" class="level3"><b style="color:#2ca25f;">
+<h3 class="anchored" data-anchor-id="paso-2.-componente-gráfico-del-ca-3">Paso 2. Componente gráfico del CA</h3>
+</b><p><b style="color:#2ca25f;"></b></p>
+<p>La <a href="#fig-fig7">Figura&nbsp;<span>12.7</span></a> muestra cómo el primer eje canónico captura la mayor parte de la varianza de los datos.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Figura de autovalores (para la escogencia de ejes)</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="fu">fviz_screeplot</span>(ca3, <span class="at">addlabels =</span> <span class="cn">TRUE</span>, <span class="at">ylim =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">60</span>),</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>               <span class="at">ylab =</span> <span class="st">"% Varianza explicada"</span>,</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>               <span class="at">xlab =</span> <span class="st">"Dimensiones"</span>,</span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>               <span class="at">col=</span><span class="st">"steelblue"</span>)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div id="fig-fig7" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="Ordenación_ca_files/figure-html/fig-fig7-1.png" class="img-fluid figure-img" width="672"></p>
+<p></p><figcaption class="figure-caption">Figura&nbsp;12.7: Varianza explicada por los ejes canónicos del ca.</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<p>La <a href="#fig-fig8">Figura&nbsp;<span>12.8</span></a> muestra la ordenación de las especies de peces, dentro d elos dos ejes canónicos.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Ordenación de los speones</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="fu">fviz_ca_col</span> (ca3, <span class="at">repel =</span> <span class="cn">TRUE</span>,          <span class="co"># Repel evita superposición de texto</span></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>             <span class="at">ggtheme =</span> <span class="fu">theme_minimal</span>())       <span class="co"># theme_minimal: Comprime relaciones de variables y de observaciones</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div id="fig-fig8" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="Ordenación_ca_files/figure-html/fig-fig8-1.png" class="img-fluid figure-img" width="672"></p>
+<p></p><figcaption class="figure-caption">Figura&nbsp;12.8: Ordenación de las especies de peces en el ca.</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<p>La <a href="#fig-fig9">Figura&nbsp;<span>12.9</span></a> muestra la ordenación de las localidades, dentro d elos dos ejes canónicos.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Ordenación de las observaciones (sitios y periodos clim?ticos)</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="fu">fviz_ca_row</span> (ca3, <span class="at">repel =</span> <span class="cn">TRUE</span>,         <span class="co"># Repel evita superposición de texto</span></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>             <span class="at">geom =</span> <span class="fu">c</span>(<span class="st">"point"</span>,<span class="st">"text"</span>))       <span class="co"># theme_minimal: Comprime relaciones de variables y de observaciones</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div id="fig-fig9" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="Ordenación_ca_files/figure-html/fig-fig9-1.png" class="img-fluid figure-img" width="672"></p>
+<p></p><figcaption class="figure-caption">Figura&nbsp;12.9: Ordenación de las localidades o tributarios en el ca.</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<p>La <a href="#fig-fig10">Figura&nbsp;<span>12.10</span></a> muestra la ordenación de las localidades y de los taxones de peces, dentro d elos dos ejes canónicos.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Figura del Biplot de ordenación para sitios y speones</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="fu">fviz_ca_biplot</span> (ca3, <span class="at">repel =</span> <span class="cn">TRUE</span>,        <span class="co"># Repel evita superposición de texto     </span></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>                <span class="at">ggtheme =</span> <span class="fu">theme_minimal</span>())</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div id="fig-fig10" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="Ordenación_ca_files/figure-html/fig-fig10-1.png" class="img-fluid figure-img" width="672"></p>
+<p></p><figcaption class="figure-caption">Figura&nbsp;12.10: Ordenación de las localidades y los peces en el ca.</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<p>La <a href="#fig-fig11">Figura&nbsp;<span>12.11</span></a> muestra la ordenación de las localidades y de los peces de mayor ontribución en los dos ejes canónicos.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Seis speones con mayor contribución a la ordenación</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="fu">fviz_ca_biplot</span>(ca3,</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>               <span class="at">select.row =</span> <span class="fu">list</span>(<span class="at">contrib =</span> <span class="dv">6</span>),</span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>               <span class="at">select.col =</span> <span class="fu">list</span>(<span class="at">contrib =</span> <span class="dv">4</span>))</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div id="fig-fig11" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="Ordenación_ca_files/figure-html/fig-fig11-1.png" class="img-fluid figure-img" width="672"></p>
+<p></p><figcaption class="figure-caption">Figura&nbsp;12.11: Ordenación de las localidades y los peces de mayor contribución en el ca.</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<p>La <a href="#fig-fig12">Figura&nbsp;<span>12.12</span></a> muestra otra forma de ordenar a las localidades de mayor contribución en los dos ejes canónicos.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Localidades con mayor contribución al CA</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="fu">fviz_ca_row</span>(ca3, <span class="at">col.row =</span> <span class="st">"cos2"</span>,</span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>            <span class="at">gradient.cols =</span> <span class="fu">c</span>(<span class="st">"#00AFBB"</span>, <span class="st">"#E7B800"</span>, <span class="st">"#FC4E07"</span>),</span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>            <span class="at">repel =</span> <span class="cn">TRUE</span>)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div id="fig-fig12" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="Ordenación_ca_files/figure-html/fig-fig12-1.png" class="img-fluid figure-img" width="672"></p>
+<p></p><figcaption class="figure-caption">Figura&nbsp;12.12: Ordenación de las localidades y los peces de mayor contribución en el ca.</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<p>La <a href="#fig-fig13">Figura&nbsp;<span>12.13</span></a> muestra otra forma de ordenar a las especies de peces de mayor contribución en los dos ejes canónicos.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Categorías de frecuencia de compra con mayor contribución al CA</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="fu">fviz_ca_col</span>(ca3, <span class="at">col.col =</span> <span class="st">"cos2"</span>,</span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>            <span class="at">gradient.cols =</span> <span class="fu">c</span>(<span class="st">"#00AFBB"</span>, <span class="st">"#E7B800"</span>, <span class="st">"#FC4E07"</span>),</span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>            <span class="at">repel =</span> <span class="cn">TRUE</span>)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div id="fig-fig13" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="Ordenación_ca_files/figure-html/fig-fig13-1.png" class="img-fluid figure-img" width="672"></p>
+<p></p><figcaption class="figure-caption">Figura&nbsp;12.13: Ordenación de las localidades y los peces de mayor contribución en el ca.</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="section-5" class="level2">
+<h2 class="anchored" data-anchor-id="section-5"></h2>
+<p><b style="color:#1f78b4;"></b></p><b style="color:#1f78b4;">
+</b></section><b style="color:#1f78b4;">
+</b><section id="ca-con-el-paquete-ggplot2" class="level2"><b style="color:#1f78b4;">
+<h2 class="anchored" data-anchor-id="ca-con-el-paquete-ggplot2">5. CA con el paquete ggplot2</h2>
+</b><p><b style="color:#1f78b4;"></b></p>
+<p><b style="color:#2ca25f;"></b></p><b style="color:#2ca25f;">
+</b><section id="paso-1.-realización-del-ca-3" class="level3"><b style="color:#2ca25f;">
+<h3 class="anchored" data-anchor-id="paso-1.-realización-del-ca-3">Paso 1. Realización del CA</h3>
+</b><p><b style="color:#2ca25f;"></b></p>
+<p>Se utilizará el paso 1 del paquete vegan (ca1).</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Insumos del RDA parsimonioso o que resume a las tres variables</span></span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>ca1 <span class="ot">&lt;-</span> <span class="fu">cca</span>(spe)</span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a><span class="co">#names(ca3) </span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><b style="color:#fdae6b;"></b></p><b style="color:#fdae6b;">
+</b><section id="coordenadas-de-los-sitios-y-el-factor-coord.sit" class="level4"><b style="color:#fdae6b;">
+<h4 class="anchored" data-anchor-id="coordenadas-de-los-sitios-y-el-factor-coord.sit">1.1 Coordenadas de los sitios y el factor “coord.sit”</h4>
+</b><p><b style="color:#fdae6b;"></b></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 1) Coordenadas de los sitios el factor "coord.sit"</span></span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>coord.sit <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(ca1<span class="sc">$</span>CA<span class="sc">$</span>u[,<span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>])     <span class="co"># Coordenadas de los sitios</span></span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>coord.sit<span class="sc">$</span>sitio <span class="ot">&lt;-</span> <span class="fu">rownames</span>(coord.sit)      <span class="co"># Crear una columna con nombres de los sitios</span></span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>coord.sit<span class="sc">$</span>grp <span class="ot">&lt;-</span>  datos.gr<span class="sc">$</span>grupo            <span class="co"># Adicionar columna de grupos por Epoca</span></span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(coord.sit)                             <span class="co"># vista resumida de las coordenadas de sitios</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>         CA1      CA2 sitio grp
+1 2.76487587 3.076306     1   A
+2 2.27540438 2.565531     2   A
+3 2.01822931 2.441224     3   A
+4 1.28485306 1.935664     4   A
+5 0.08874624 1.015182     5   B
+6 1.03187578 1.712163     6   A</code></pre>
+</div>
+</div>
+<p><b style="color:#fdae6b;"></b></p><b style="color:#fdae6b;">
+</b></section><b style="color:#fdae6b;">
+</b><section id="coordenadas-de-las-especies-coord.spe" class="level4"><b style="color:#fdae6b;">
+<h4 class="anchored" data-anchor-id="coordenadas-de-las-especies-coord.spe">1.2 Coordenadas de las especies “coord.spe”</h4>
+</b><p><b style="color:#fdae6b;"></b></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 2) Coordenadas de los speones "coord.spe"</span></span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>coord.spe <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(ca1<span class="sc">$</span>CA<span class="sc">$</span>v[,<span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>])   <span class="co"># Dos primeros ejes</span></span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>coord.spe<span class="sc">$</span>especies <span class="ot">&lt;-</span> <span class="fu">rownames</span>(coord.spe)         <span class="co"># Insertar columna con nombres de las especies</span></span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(coord.spe) </span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>          CA1        CA2 especies
+Cogo 1.935863 -3.7116716     Cogo
+Satr 2.143434  1.1688783     Satr
+Phph 1.658138  0.7509378     Phph
+Babl 1.272671  0.9498334     Babl
+Thth 2.006536 -3.6576095     Thth
+Teso 1.286173 -3.8948706     Teso</code></pre>
+</div>
+</div>
+<p><b style="color:#fdae6b;"></b></p><b style="color:#fdae6b;">
+</b></section><b style="color:#fdae6b;">
+</b><section id="coordenadas-de-las-variables-ambientales-coord.amb" class="level4"><b style="color:#fdae6b;">
+<h4 class="anchored" data-anchor-id="coordenadas-de-las-variables-ambientales-coord.amb">1.3 Coordenadas de las variables ambientales “coord.amb”</h4>
+</b><p><b style="color:#fdae6b;"></b></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 3) Coordenadas de las ambientales "coord.amb"</span></span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>amb1 <span class="ot">=</span> <span class="fu">envfit</span>(ca1,env) </span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>coord.amb <span class="ot">=</span> <span class="fu">as.data.frame</span>(<span class="fu">scores</span>(amb1, <span class="st">"vectors"</span>))</span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a>coord.amb<span class="sc">$</span>amb <span class="ot">&lt;-</span> <span class="fu">rownames</span>(coord.amb)         <span class="co"># Insertar columna con nombres de las ambientales</span></span>
+<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(coord.amb) </span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>           CA1        CA2 amb
+dfs -0.7870185 -0.2642481 dfs
+ele  0.7294510  0.5251086 ele
+slo  0.4023523  0.3684084 slo
+dis -0.6186136 -0.2476513 dis
+pH   0.1528726 -0.2597382  pH
+har -0.4929049 -0.4788158 har</code></pre>
+</div>
+</div>
+<p><b style="color:#2ca25f;"></b></p><b style="color:#2ca25f;">
+</b></section><b style="color:#2ca25f;">
+</b></section><b style="color:#2ca25f;">
+</b><section id="paso-2.-componente-gráfico-del-ca-4" class="level3"><b style="color:#2ca25f;">
+<h3 class="anchored" data-anchor-id="paso-2.-componente-gráfico-del-ca-4">Paso 2. Componente gráfico del CA</h3>
+</b><p><b style="color:#2ca25f;"></b></p>
+<p><b style="color:#fdae6b;"></b></p><b style="color:#fdae6b;">
+</b><section id="biplot-para-ordenar-las-localidades-y-las-especies" class="level4"><b style="color:#fdae6b;">
+<h4 class="anchored" data-anchor-id="biplot-para-ordenar-las-localidades-y-las-especies">2.1 Biplot para ordenar las localidades y las especies</h4>
+</b><p><b style="color:#fdae6b;"></b></p>
+<p>La <a href="#fig-fig14">Figura&nbsp;<span>12.14</span></a> muestra la ordenación de las localidades o tributarios con las especies de peces, en los cuatro grupos generados.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 1) Figura con vectores de especies</span></span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Sitios</span></span>
+<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text_repel</span>(<span class="at">data =</span> coord.sit,<span class="fu">aes</span>(CA1,CA2,<span class="at">label=</span><span class="fu">row.names</span>(coord.sit)),</span>
+<span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a>                  <span class="at">size=</span><span class="dv">4</span>)<span class="sc">+</span>   <span class="co"># Muestra el cuadro de la figura</span></span>
+<span id="cb34-7"><a href="#cb34-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">data =</span> coord.sit,<span class="fu">aes</span>(CA1,CA2,<span class="at">colour=</span>grp),<span class="at">size=</span><span class="dv">4</span>)<span class="sc">+</span></span>
+<span id="cb34-8"><a href="#cb34-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_shape_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="dv">21</span><span class="sc">:</span><span class="dv">25</span>))<span class="sc">+</span></span>
+<span id="cb34-9"><a href="#cb34-9" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb34-10"><a href="#cb34-10" aria-hidden="true" tabindex="-1"></a>  <span class="co"># speones  </span></span>
+<span id="cb34-11"><a href="#cb34-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_segment</span>(<span class="at">data =</span> coord.spe,<span class="fu">aes</span>(<span class="at">x =</span> <span class="dv">0</span>, <span class="at">y =</span> <span class="dv">0</span>, <span class="at">xend =</span> CA1, <span class="at">yend =</span> CA2), </span>
+<span id="cb34-12"><a href="#cb34-12" aria-hidden="true" tabindex="-1"></a>               <span class="at">arrow =</span> <span class="fu">arrow</span>(<span class="at">angle=</span><span class="fl">22.5</span>,<span class="at">length =</span> <span class="fu">unit</span>(<span class="fl">0.25</span>,<span class="st">"cm"</span>),</span>
+<span id="cb34-13"><a href="#cb34-13" aria-hidden="true" tabindex="-1"></a>                             <span class="at">type =</span> <span class="st">"closed"</span>),<span class="at">linetype=</span><span class="dv">1</span>, <span class="at">size=</span><span class="fl">0.6</span>,<span class="at">colour =</span> <span class="st">"red"</span>)<span class="sc">+</span></span>
+<span id="cb34-14"><a href="#cb34-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text_repel</span>(<span class="at">data =</span> coord.spe,<span class="fu">aes</span>(CA1,CA2,<span class="at">label=</span>especies),<span class="at">colour =</span> <span class="st">"red"</span>)<span class="sc">+</span></span>
+<span id="cb34-15"><a href="#cb34-15" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb34-16"><a href="#cb34-16" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Factor</span></span>
+<span id="cb34-17"><a href="#cb34-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_mark_ellipse</span>(<span class="at">data=</span>coord.sit,<span class="fu">aes</span>(<span class="at">x=</span>CA1,<span class="at">y=</span>CA2,<span class="at">fill=</span>grp,<span class="at">group=</span>grp),<span class="at">alpha=</span><span class="fl">0.30</span>) <span class="sc">+</span></span>
+<span id="cb34-18"><a href="#cb34-18" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb34-19"><a href="#cb34-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept=</span><span class="dv">0</span>,<span class="at">linetype=</span><span class="dv">3</span>,<span class="at">size=</span><span class="dv">1</span>) <span class="sc">+</span> </span>
+<span id="cb34-20"><a href="#cb34-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept=</span><span class="dv">0</span>,<span class="at">linetype=</span><span class="dv">3</span>,<span class="at">size=</span><span class="dv">1</span>)<span class="sc">+</span></span>
+<span id="cb34-21"><a href="#cb34-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">guides</span>(<span class="at">shape=</span><span class="fu">guide_legend</span>(<span class="at">title=</span><span class="cn">NULL</span>,<span class="at">color=</span><span class="st">"black"</span>),</span>
+<span id="cb34-22"><a href="#cb34-22" aria-hidden="true" tabindex="-1"></a>         <span class="at">fill=</span><span class="fu">guide_legend</span>(<span class="at">title=</span><span class="cn">NULL</span>))<span class="sc">+</span></span>
+<span id="cb34-23"><a href="#cb34-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>()<span class="sc">+</span><span class="fu">theme</span>(<span class="at">panel.grid=</span><span class="fu">element_blank</span>())</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div id="fig-fig14" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="Ordenación_ca_files/figure-html/fig-fig14-1.png" class="img-fluid figure-img" width="672"></p>
+<p></p><figcaption class="figure-caption">Figura&nbsp;12.14: Ordenación de las localidades y los peces de mayor contribución en el ca.</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<p><b style="color:#fdae6b;"></b></p><b style="color:#fdae6b;">
+</b></section><b style="color:#fdae6b;">
+</b><section id="biplot-para-ordenar-las-localidades-las-especies-y-las-variables-ambientales" class="level4"><b style="color:#fdae6b;">
+<h4 class="anchored" data-anchor-id="biplot-para-ordenar-las-localidades-las-especies-y-las-variables-ambientales">2.2 Biplot para ordenar las localidades, las especies y las variables ambientales</h4>
+</b><p><b style="color:#fdae6b;"></b></p>
+<p>La <a href="#fig-fig15">Figura&nbsp;<span>12.15</span></a> muestra la ordenación de las localidades o tributarios con las especies de peces y las variables ambientales como vectores, en los cuatro grupos generados.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Sitios</span></span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text_repel</span>(<span class="at">data =</span> coord.sit,<span class="fu">aes</span>(CA1,CA2,<span class="at">label=</span><span class="fu">row.names</span>(coord.sit)),</span>
+<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a>                  <span class="at">size=</span><span class="dv">4</span>)<span class="sc">+</span>   <span class="co"># Muestra el cuadro de la figura</span></span>
+<span id="cb35-6"><a href="#cb35-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">data =</span> coord.sit,<span class="fu">aes</span>(CA1,CA2,<span class="at">colour=</span>grp),<span class="at">size=</span><span class="dv">4</span>)<span class="sc">+</span></span>
+<span id="cb35-7"><a href="#cb35-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_shape_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="dv">21</span><span class="sc">:</span><span class="dv">25</span>))<span class="sc">+</span></span>
+<span id="cb35-8"><a href="#cb35-8" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb35-9"><a href="#cb35-9" aria-hidden="true" tabindex="-1"></a>  <span class="co"># especies  </span></span>
+<span id="cb35-10"><a href="#cb35-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_segment</span>(<span class="at">data =</span> coord.spe,<span class="fu">aes</span>(<span class="at">x =</span> <span class="dv">0</span>, <span class="at">y =</span> <span class="dv">0</span>, <span class="at">xend =</span> CA1, <span class="at">yend =</span> CA2), </span>
+<span id="cb35-11"><a href="#cb35-11" aria-hidden="true" tabindex="-1"></a>               <span class="at">arrow =</span> <span class="fu">arrow</span>(<span class="at">angle=</span><span class="dv">0</span>,<span class="at">length =</span> <span class="fu">unit</span>(<span class="dv">0</span>,<span class="st">"cm"</span>),</span>
+<span id="cb35-12"><a href="#cb35-12" aria-hidden="true" tabindex="-1"></a>                             <span class="at">type =</span> <span class="st">"closed"</span>),<span class="at">linetype=</span><span class="dv">0</span>, <span class="at">size=</span><span class="dv">0</span>,<span class="at">colour =</span> <span class="st">"red"</span>)<span class="sc">+</span></span>
+<span id="cb35-13"><a href="#cb35-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text_repel</span>(<span class="at">data =</span> coord.spe,<span class="fu">aes</span>(CA1,CA2,<span class="at">label=</span>especies),<span class="at">colour =</span> <span class="st">"red"</span>)<span class="sc">+</span></span>
+<span id="cb35-14"><a href="#cb35-14" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb35-15"><a href="#cb35-15" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Ambiental  </span></span>
+<span id="cb35-16"><a href="#cb35-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_segment</span>(<span class="at">data =</span> coord.amb,<span class="fu">aes</span>(<span class="at">x =</span> <span class="dv">0</span>, <span class="at">y =</span> <span class="dv">0</span>, <span class="at">xend =</span> <span class="dv">2</span><span class="sc">*</span>CA1, <span class="at">yend =</span> <span class="dv">2</span><span class="sc">*</span>CA2), </span>
+<span id="cb35-17"><a href="#cb35-17" aria-hidden="true" tabindex="-1"></a>               <span class="at">arrow =</span> <span class="fu">arrow</span>(<span class="at">angle=</span><span class="fl">22.5</span>,<span class="at">length =</span> <span class="fu">unit</span>(<span class="fl">0.25</span>,<span class="st">"cm"</span>),</span>
+<span id="cb35-18"><a href="#cb35-18" aria-hidden="true" tabindex="-1"></a>                             <span class="at">type =</span> <span class="st">"closed"</span>),<span class="at">linetype=</span><span class="dv">1</span>, <span class="at">size=</span><span class="fl">0.6</span>,<span class="at">colour =</span> <span class="st">"blue"</span>)<span class="sc">+</span></span>
+<span id="cb35-19"><a href="#cb35-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text_repel</span>(<span class="at">data =</span> coord.amb,<span class="fu">aes</span>(<span class="dv">2</span><span class="sc">*</span>CA1,<span class="dv">2</span><span class="sc">*</span>CA2,<span class="at">label=</span><span class="fu">row.names</span>(coord.amb)),<span class="at">colour =</span> <span class="st">"#00abff"</span>)<span class="sc">+</span></span>
+<span id="cb35-20"><a href="#cb35-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_mark_ellipse</span>(<span class="at">data=</span>coord.sit,<span class="fu">aes</span>(<span class="at">x=</span>CA1,<span class="at">y=</span>CA2,<span class="at">fill=</span>grp,<span class="at">group=</span>grp),<span class="at">alpha=</span><span class="fl">0.30</span>) <span class="sc">+</span></span>
+<span id="cb35-21"><a href="#cb35-21" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb35-22"><a href="#cb35-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept=</span><span class="dv">0</span>,<span class="at">linetype=</span><span class="dv">3</span>,<span class="at">size=</span><span class="dv">1</span>) <span class="sc">+</span> </span>
+<span id="cb35-23"><a href="#cb35-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept=</span><span class="dv">0</span>,<span class="at">linetype=</span><span class="dv">3</span>,<span class="at">size=</span><span class="dv">1</span>)<span class="sc">+</span></span>
+<span id="cb35-24"><a href="#cb35-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">guides</span>(<span class="at">shape=</span><span class="fu">guide_legend</span>(<span class="at">title=</span><span class="cn">NULL</span>,<span class="at">color=</span><span class="st">"black"</span>),</span>
+<span id="cb35-25"><a href="#cb35-25" aria-hidden="true" tabindex="-1"></a>         <span class="at">fill=</span><span class="fu">guide_legend</span>(<span class="at">title=</span><span class="cn">NULL</span>))<span class="sc">+</span></span>
+<span id="cb35-26"><a href="#cb35-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>()<span class="sc">+</span><span class="fu">theme</span>(<span class="at">panel.grid=</span><span class="fu">element_blank</span>())</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div id="fig-fig15" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="Ordenación_ca_files/figure-html/fig-fig15-1.png" class="img-fluid figure-img" width="672"></p>
+<p></p><figcaption class="figure-caption">Figura&nbsp;12.15: Ordenación de las localidades y los peces de mayor contribución en el ca.</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<p><b style="color:#1f78b4;"></b></p><b style="color:#1f78b4;">
+</b></section><b style="color:#1f78b4;">
+</b></section><b style="color:#1f78b4;">
+</b></section><b style="color:#1f78b4;">
+</b><section id="taller-de-entrenamiento" class="level2"><b style="color:#1f78b4;">
+<h2 class="anchored" data-anchor-id="taller-de-entrenamiento">Taller de entrenamiento</h2>
+</b><p><b style="color:#1f78b4;"></b></p>
+<p>Objetivo:&nbsp;Poner en práctica los conceptos vistos en este taller, realizando las siguientes opciones realizando un PCA que integgre a las variables biológicas (taxones) y a las ambientalñes de la base seleccionada. Enviar los resultados al&nbsp;<em>Teams</em>&nbsp;del profesor.</p>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copiado");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copiado");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+    var links = window.document.querySelectorAll('a:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+          // target, if specified
+          link.setAttribute("target", "_blank");
+          // default icon
+          link.classList.add("external");
+      }
+    }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./Ordenación_nmds2.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Taller 5.2 NMDS Peces</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./Ordenación_mca.html" class="pagination-link">
+        <span class="nav-page-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Taller 6.2 MCA Peces</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+</body></html>
